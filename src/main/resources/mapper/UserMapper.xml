@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fzc.lalw.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.fzc.lalw.domain.User">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+            <result property="creationTime" column="creation_time" jdbcType="TIMESTAMP"/>
+            <result property="commentNewMsgNum" column="comment_newmsgnum"
+                    jdbcType="INTEGER"/>
+            <result property="sysNewMsgNum" column="sys_newmsgnum"
+                    jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,email,password,
+        avatar,creation_time,comment_newmsgnum,
+        sys_newmsgnum
+    </sql>
+    <insert id="addUser">
+        insert into user values(#{id}, #{email}, #{password}, #{avatar},
+        #{creationTime}, #{commentNewMsgNum}, #{sysNewMsgNum})
+    </insert>
+    <update id="modifyUser">
+        update user set
+        email = #{email},
+        password = #{password},
+        avatar = #{avatar},
+        creation_time = #{creationTime},
+        comment_newmsgnum = #{commentNewMsgNum},
+        sys_newmsgnum = #{sysNewMsgNum}
+        where id = #{id}
+    </update>
+    <delete id="deleteUser">
+        delete from user where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="isExist" resultType="java.lang.Integer">
+        select count(id) from user where email = #{email}
+    </select>
+    <select id="getPasswordByEmail" resultType="java.lang.String">
+        select password from user where email = #{email}
+    </select>
+    <select id="getPasswordById" resultType="java.lang.String">
+        select password from user where id = #{id}
+    </select>
+    <select id="getUserById" resultType="com.fzc.lalw.domain.User" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from user where id = #{id}
+    </select>
+    <select id="getUserByEmail" resultType="com.fzc.lalw.domain.User" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from user where email =
+        #{email}
+    </select>
+    <select id="getUser" resultType="com.fzc.lalw.domain.User" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from user limit ${index},
+        ${length}
+    </select>
+    <select id="getTotalNum" resultType="java.lang.Integer">
+        select count(id) from user
+    </select>
+
+
+</mapper>

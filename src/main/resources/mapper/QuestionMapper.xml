@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fzc.lalw.mapper.QuestionMapper">
+
+    <resultMap id="BaseResultMap" type="com.fzc.lalw.domain.Question">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="creationTime" column="creation_time" jdbcType="TIMESTAMP"/>
+            <result property="lastModified" column="last_modified" jdbcType="TIMESTAMP"/>
+            <result property="commentNumber" column="comment_number" jdbcType="INTEGER"/>
+            <result property="readNumber" column="read_number" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,title,
+        content,creation_time,last_modified,
+        comment_number,read_number
+    </sql>
+    <sql id="Brief">
+        id,user_id,title,
+        creation_time,last_modified,
+        comment_number,read_number
+    </sql>
+    <insert id="addQuestion">
+        insert into question values(#{id}, #{userId}, #{title}, #{content},
+                               #{creationTime}, #{lastModified},
+                                    #{commentNumber}, #{readNumber})
+    </insert>
+    <update id="modifyQuestion">
+        update question set
+        title = #{title},
+        content = #{content},
+        last_modified = #{lastModified}
+        where id = #{id}
+    </update>
+    <update id="updateCommentNumber">
+        update question set
+        comment_number =
+            (select count(id) from comment where question_id = #{id})
+        where id = #{id}
+    </update>
+    <delete id="deleteQuestion">
+        delete from question where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="deleteQuestionById">
+        delete from question where id = #{id}
+    </delete>
+    <select id="getQuestionById"
+            resultType="com.fzc.lalw.domain.Question" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from question where id =
+        #{id};
+    </select>
+    <select id="getQuestion" resultType="com.fzc.lalw.domain.Question" resultMap="BaseResultMap">
+        select <include refid="Brief"/> from question
+        limit ${index}, ${length}
+    </select>
+    <select id="getQuestionByUserId" resultType="com.fzc.lalw.domain.Question" resultMap="BaseResultMap">
+        select <include refid="Brief"/> from question where user_id =
+        #{userId} limit
+        ${index}, ${length}
+    </select>
+    <select id="getTotalNum" resultType="java.lang.Integer">
+        select count(id) from question where user_id = #{userId}
+    </select>
+
+
+</mapper>

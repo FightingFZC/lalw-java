@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fzc.lalw.mapper.RecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.fzc.lalw.domain.Record">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="matrixs" column="matrixs" jdbcType="VARCHAR"/>
+            <result property="result" column="result" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="creationTime" column="creation_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,matrixs,
+        result,type,creation_time
+    </sql>
+    <insert id="addRecord">
+        insert into record values(#{id}, #{userId}, #{matrixs}, #{result},
+        #{type}, #{creationTime})
+    </insert>
+    <delete id="deleteRecordById">
+        delete from record where id = #{id}
+    </delete>
+    <delete id="deleteRecord">
+        delete from record where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getRecordById" resultType="com.fzc.lalw.domain.Record" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from record where id = #{id}
+    </select>
+    <select id="getRecord" resultType="com.fzc.lalw.domain.Record" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from record
+        limit ${index}, ${length}
+    </select>
+    <select id="getRecordByUserId" resultType="com.fzc.lalw.domain.Record" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from record where user_id =
+        #{userId} limit
+        ${index}, ${length}
+    </select>
+
+
+</mapper>

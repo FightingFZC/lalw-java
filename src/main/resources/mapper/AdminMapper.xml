@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fzc.lalw.mapper.AdminMapper">
+
+    <resultMap id="BaseResultMap" type="com.fzc.lalw.domain.Admin">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="account" column="account" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+            <result property="creationTime" column="creation_time"
+                    jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,account,password,
+        avatar,creation_time
+    </sql>
+
+    <insert id="addAdmin">
+        insert into admin
+        values(#{id}, #{account}, #{password}, #{avatar}, #{creationTime})
+    </insert>
+    <update id="modifyAdmin">
+        update admin set
+        account = #{account},
+        password = #{password},
+        avatar = #{avatar}
+        where id = #{id}
+    </update>
+    <delete id="deleteAdmin">
+        delete from admin where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="getPasswordByAccount" resultType="java.lang.String" >
+        select password from admin where account = #{account}
+    </select>
+
+    <select id="getPasswordById" resultType="java.lang.String">
+        select password from admin where account = #{id}
+    </select>
+    <select id="getAdminById" resultType="com.fzc.lalw.domain.Admin" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from admin where id = #{id}
+    </select>
+    <select id="getAdmin"  resultMap="BaseResultMap"
+            resultType="com.fzc.lalw.domain.Admin">
+        select <include refid="Base_Column_List"/> from admin limit ${index},
+        ${length}
+    </select>
+    <select id="getAdminByAccount"
+            resultType="com.fzc.lalw.domain.Admin" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from admin where account =
+        #{account}
+    </select>
+
+
+</mapper>

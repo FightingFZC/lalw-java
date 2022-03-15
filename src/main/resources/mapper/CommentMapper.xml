@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fzc.lalw.mapper.CommentMapper">
+
+    <resultMap id="BaseResultMap" type="com.fzc.lalw.domain.Comment">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="questionId" column="question_id" jdbcType="INTEGER"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="creationTime" column="creation_time" jdbcType="TIMESTAMP"/>
+            <result property="lastModified" column="last_modified" jdbcType="TIMESTAMP"/>
+            <result property="replyNumber" column="reply_number" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,question_id,
+        content,creation_time,last_modified,
+        reply_number
+    </sql>
+    <sql id="Brief">
+        id,user_id,question_id,
+        creation_time,last_modified,reply_number
+    </sql>
+    <insert id="addComment">
+        insert into comment values(#{id}, #{userId}, #{questionId},
+                                   #{content}, #{creationTime},
+                                   #{lastModified}, #{replyNumber})
+    </insert>
+    <update id="modifyComment">
+        update comment set
+        content = #{content},
+        last_modified = #{lastModified}
+        where id = #{id}
+    </update>
+    <update id="updateReplyNumber">
+        update comment set
+        reply_number = (select count(id) from reply where replied_id = #{id})
+        where id = #{id}
+    </update>
+    <delete id="deleteComment">
+        delete from comment where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="deleteCommentById">
+        select <include refid="Base_Column_List"/> from comment where id = #{id}
+    </delete>
+    <select id="getCommentById"
+            resultType="com.fzc.lalw.domain.Comment" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from comment where id = #{id}
+    </select>
+    <select id="getComment" resultType="com.fzc.lalw.domain.Comment" resultMap="BaseResultMap">
+        select <include refid="Brief"/> from comment
+        limit ${index}, ${length}
+    </select>
+    <select id="getCommentByQuestionId" resultType="com.fzc.lalw.domain.Comment" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from comment where question_id =
+        #{questionId} and id not in (select comment_id from reply where
+        question_id = #{questionId}) limit ${index},
+        ${length}
+    </select>
+    <select id="getCommentByCommentId" resultType="com.fzc.lalw.domain.Comment" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from comment where id in
+        (select comment_id from reply where comment_id = #{commentId})
+        limit #{index}, #{length}
+    </select>
+    <select id="getCommentByUserId" resultType="com.fzc.lalw.domain.Comment" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from comment where user_id =
+        #{userId} limit ${index}, ${length}
+    </select>
+    <select id="getCommentByReplyId"
+            resultType="com.fzc.lalw.domain.Comment" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from comment where id =
+        (select replied_id from reply where comment_id = #{replyId})
+    </select>
+    <select id="getTotalNum" resultType="java.lang.Integer">
+        select count(id) from comment where user_id = #{id}
+    </select>
+
+
+</mapper>

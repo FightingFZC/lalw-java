@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fzc.lalw.mapper.AlgMapper">
+
+    <resultMap id="BaseResultMap" type="com.fzc.lalw.domain.Alg">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="creationTime" column="creation_time" jdbcType="TIMESTAMP"/>
+            <result property="lastModified" column="last_modified" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,title,
+        content,creation_time,last_modified
+    </sql>
+
+    <sql id="Brief">
+        id,user_id,title,creation_time,last_modified
+    </sql>
+    <insert id="addAlg">
+        insert into alg values(#{id}, #{userId}, #{title}, #{content},
+                                #{creationTime}, #{lastModified})
+    </insert>
+    <update id="modifyAlg">
+        update alg set
+        title = #{title},
+        content = #{content},
+        last_modified = #{lastModified}
+        where id = #{id}
+    </update>
+    <delete id="deleteAlg">
+        delete from alg where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="getAlgById" resultType="com.fzc.lalw.domain.Alg" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from alg where id = #{id}
+    </select>
+    <select id="getAlg" resultType="com.fzc.lalw.domain.Alg" resultMap="BaseResultMap">
+        select <include refid="Brief"/> from alg
+        limit ${index}, ${length}
+    </select>
+    <select id="getAlgByUserId" resultType="com.fzc.lalw.domain.Alg" resultMap="BaseResultMap">
+        select <include refid="Brief"/> from alg where user_id = #{userId} limit
+        ${index}, ${length}
+    </select>
+    <select id="getTotalNum" resultType="java.lang.Integer">
+        select count(id) from alg where user_id = #{userId}
+    </select>
+
+
+</mapper>
