@@ -34,6 +34,6 @@ public class Entity {
     public Entity() {
         setIndex(0);
         setLength(10);
-        setCreationTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        setCreationTime(new SimpleDateFormat("yyyy-M-d H:m:s").format(new Date()));
     }
 }
