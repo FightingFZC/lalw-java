@@ -7,8 +7,10 @@
     <resultMap id="BaseResultMap" type="com.fzc.lalw.domain.Record">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="userId" column="user_id" jdbcType="INTEGER"/>
-            <result property="matrixs" column="matrixs" jdbcType="VARCHAR"/>
-            <result property="result" column="result" jdbcType="VARCHAR"/>
+            <result property="matrixs" column="matrixs" jdbcType="OTHER"
+                    typeHandler="com.fzc.lalw.config.JsonTypeHandler"/>
+            <result property="result" column="result" jdbcType="VARCHAR"
+                    typeHandler="com.fzc.lalw.config.JsonTypeHandler"/>
             <result property="type" column="type" jdbcType="VARCHAR"/>
             <result property="creationTime" column="creation_time" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -17,8 +19,10 @@
         id,user_id,matrixs,
         result,type,creation_time
     </sql>
-    <insert id="addRecord">
-        insert into record values(#{id}, #{userId}, #{matrixs}, #{result},
+    <insert id="addRecord" >
+        insert into record values(#{id}, #{userId},
+                                  #{matrixs, typeHandler=com.fzc.lalw.config.JsonTypeHandler},
+                                  #{result, typeHandler=com.fzc.lalw.config.JsonTypeHandler},
         #{type}, #{creationTime})
     </insert>
     <delete id="deleteRecordById">

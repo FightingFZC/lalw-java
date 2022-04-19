@@ -2,6 +2,8 @@ package com.fzc.lalw.domain;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 
  * @TableName record
@@ -16,12 +18,12 @@ public class Record extends Entity {
     /**
      * 计算的矩阵
      */
-    private String matrixs;
+    private List<String[][]> matrixs;
 
     /**
      * 计算结果
      */
-    private String result;
+    private List<Object> result;
 
     /**
      * 计算类型
