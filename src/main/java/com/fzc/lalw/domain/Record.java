@@ -18,7 +18,7 @@ public class Record extends Entity {
     /**
      * 计算的矩阵
      */
-    private List<String[][]> matrixs;
+    private List<Integer[][]> matrixs;
 
     /**
      * 计算结果
